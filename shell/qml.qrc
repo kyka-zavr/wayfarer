@@ -1,0 +1,10 @@
+<!DOCTYPE RCC>
+<RCC version="1.0">
+    <qresource prefix="/">
+        <file>qml/qmldir</file>
+        <file>qml/TopBar.qml</file>
+        <file>qml/Dock.qml</file>
+        <file>qml/Launcher.qml</file>
+        <file>qml/Theme.qml</file>
+    </qresource>
+</RCC>

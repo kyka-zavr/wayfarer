@@ -1,0 +1,38 @@
+# Rust
+/target/
+**/*.rs.bk
+
+# CMake / build trees
+/build/
+/out/
+CMakeCache.txt
+CMakeFiles/
+CMakeUserPresets.json
+cmake_install.cmake
+
+# Qt generated
+/qmlcache/
+*.qmlc
+*.jsc
+
+# Binaries
+*.dll
+*.exe
+*.lib
+*.pdb
+*.ilk
+*.exp
+
+# IDE
+.vs/
+.vscode/*
+!.vscode/extensions.json
+.idea/
+*.user
+*.opendb
+*.VC.db
+
+# OS
+Thumbs.db
+desktop.ini
+.DS_Store

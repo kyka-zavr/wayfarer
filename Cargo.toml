@@ -1,0 +1,21 @@
+[workspace]
+resolver = "2"
+members = ["crates/wf-core"]
+
+[workspace.package]
+version = "0.1.0"
+edition = "2021"
+rust-version = "1.79"
+license = "MIT"
+repository = "https://github.com/wayfarer-shell/wayfarer"
+
+[profile.release]
+opt-level = 3
+lto = "thin"
+codegen-units = 1
+panic = "abort"
+strip = "debuginfo"
+
+# Debug builds stay fat: we need symbols while touching hooks.
+[profile.dev]
+panic = "unwind"
