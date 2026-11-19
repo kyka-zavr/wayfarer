@@ -5,6 +5,9 @@
 use std::os::raw::{c_char, c_int};
 use std::sync::atomic::{AtomicBool, AtomicPtr, Ordering};
 
+#[cfg(windows)]
+use crate::win;
+
 /// Event kinds delivered to the frontend callback.
 pub const WF_EVENT_WINDOW_FOCUSED: u32 = 1;
 pub const WF_EVENT_WINDOW_MOVED: u32 = 2;
@@ -39,7 +42,8 @@ pub extern "C" fn wf_init(cb: Option<WfEventFn>) -> c_int {
     }
 
     if let Some(cb) = cb {
-        CALLBACK.store(cb as *mut (), Ordering::SeqCst);
+        // fn pointers are not guaranteed to be *mut (), go through usize.
+        CALLBACK.store(cb as usize as *mut (), Ordering::SeqCst);
     }
 
     #[cfg(windows)]
@@ -82,6 +86,7 @@ pub extern "C" fn wf_foreground_window() -> u64 {
 
 /// FFI-safe panic guard. Called on the way out of every entry point.
 #[inline]
+#[allow(dead_code)] // referenced once worker threads land
 pub(crate) fn guard() {
     // Placeholder: release builds are `panic = "abort"`, debug builds unwind.
     // When we start using threads, wrap their bodies in `catch_unwind`.

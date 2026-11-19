@@ -32,14 +32,14 @@ file(GLOB_RECURSE WF_RUST_SOURCES CONFIGURE_DEPENDS
 list(APPEND WF_RUST_SOURCES "${WF_ROOT}/Cargo.toml")
 
 add_custom_command(
-    OUTPUT "${WF_CORE_DLL}"
+    OUTPUT "${WF_CORE_DLL}" "${WF_CORE_IMPLIB}"
     COMMAND ${CMAKE_COMMAND} -E env "CARGO_TARGET_DIR=${WF_CARGO_TARGET_DIR}"
             cargo build --release --manifest-path "${WF_ROOT}/Cargo.toml" -p wf-core
     DEPENDS ${WF_RUST_SOURCES}
     COMMENT "cargo build: wf-core (release)"
     VERBATIM)
 
-add_custom_target(wf-core ALL DEPENDS "${WF_CORE_DLL}")
+add_custom_target(wf-core ALL DEPENDS "${WF_CORE_DLL}" "${WF_CORE_IMPLIB}")
 
 add_library(wf_core SHARED IMPORTED GLOBAL)
 set_target_properties(wf_core PROPERTIES

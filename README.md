@@ -48,29 +48,42 @@ touches a hook. Details: [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md).
 ```
 crates/wf-core/     Rust engine  -> wf_core.dll, consumed through wf_core.h
 shell/              Qt 6 / QML frontend (CMake)
+scripts/            build.ps1 / run.ps1 (MSVC env, Qt on PATH)
 docs/               architecture and roadmap
 ```
 
 ## Build
 
-Requirements: Windows 10/11, Rust stable (MSVC toolchain), Qt 6.5+ for MSVC 2022 x64, CMake 3.21+.
+Requirements: Windows 10/11, Rust stable (MSVC toolchain), Qt 6.5+ for MSVC 2022 x64,
+CMake 3.21+, and the **Desktop development with C++** workload from VS Build Tools.
+
+One-time setup:
 
 ```powershell
-winget install --id Rustlang.Rustup
+winget install --exact --id Microsoft.VisualStudio.2022.BuildTools `
+  --override "--wait --passive --add Microsoft.VisualStudio.Workload.VCTools --includeRecommended"
+winget install --exact --id Rustlang.Rustup
 rustup default stable-msvc
 
-# Qt: online installer, or aqtinstall:
-#   pip install aqtinstall
-#   aqt install-qt windows desktop 6.8.0 win64_msvc2022_64
-
-cmake -S shell -B build -DCMAKE_PREFIX_PATH="C:/Qt/6.8.0/msvc2022_64"
-cmake --build build --config Release
+pip install --user aqtinstall
+python -m aqt install-qt windows desktop 6.8.3 win64_msvc2022_64 -O C:\Qt
 ```
 
-The engine alone builds without Qt:
+Then:
 
 ```powershell
-cargo build --release -p wf-core
+.\scripts\build.ps1            # finds MSVC via vswhere, configures, builds
+.\scripts\run.ps1              # adds Qt to PATH and launches
+```
+
+`build.ps1` exists because Ninja cannot locate MSVC by itself; it imports the
+`vcvars64.bat` environment, so you do not need a Developer PowerShell. Use
+`-QtPath` if Qt lives elsewhere, and `-Config Debug` for symbols.
+
+Build parts individually:
+
+```powershell
+cargo build --release -p wf-core          # engine only, no Qt needed
 ```
 
 ## License
